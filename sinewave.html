@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sine curve</title>
+  <script src="https://cdn.tutorialjinni.com/dat-gui/0.7.6/dat.gui.js"></script>
+
+  <style>
+    canvas {
+      border : 1px solid black;
+  
+    }
+    body
+    {
+      margin: 0;
+    }  </style>
+</head>
+<body>
+  <canvas></canvas>
+  <script >
+
+   window.addEventListener('resize', function(){
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+   })
+
+    const gui = new dat.GUI();
+const canvas = document.querySelector('canvas');
+const c = canvas.getContext('2d');
+
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+const wave = {
+  y : canvas.height/2,
+  length : 0.01,
+  amplitude : 100,
+  frequency : 0.652
+}
+
+const strokecolor = {
+  h:200,
+  s: 50,
+  l: 50
+}
+
+const backcolor = {
+  r:0,
+  g:0,
+  b:0,
+  a:0.01
+}
+
+const wavefolder = gui.addFolder('wave')
+wavefolder.add(wave,'y',0,canvas.height)
+wavefolder.add(wave,'length',-0.01,0.01)
+wavefolder.add(wave,'amplitude',-300,300)
+wavefolder.add(wave,'frequency',-0.01,1)
+wavefolder.open();
+
+const strokefolder = gui.addFolder('stroke')
+strokefolder.add(strokecolor,'h',0,255)
+strokefolder.add(strokecolor,'s',0,100)
+strokefolder.add(strokecolor,'l',0,100)
+strokefolder.open();
+
+const background = gui.addFolder('background')
+background.add(backcolor,'r',0,255)
+background.add(backcolor,'g',0,255)
+background.add(backcolor,'b',0,255)
+background.add(backcolor,'a',0,1)
+background.open();
+
+
+let inc = wave.frequency
+
+
+function animate(){
+  requestAnimationFrame(animate);
+  c.fillStyle=`rgba(${backcolor.r},${backcolor.b},${backcolor.a},${backcolor.a})`
+  c.fillRect(0,0,canvas.width,canvas.height)
+  c.beginPath();
+  c.moveTo(0,canvas.height/2);
+  for(let i=0;i<canvas.width;i++)
+  {
+  c.lineTo(i,wave.y + Math.sin(i*wave.length + inc)*wave.amplitude /Math.sin(inc));
+  }
+  c.strokeStyle = `hsl(${Math.abs(strokecolor.h * Math.sin(inc))},${strokecolor.s}%,${strokecolor.l}%)`
+  c.stroke();
+  inc +=wave.frequency;
+}
+animate();
+  </script>
+</body>
+</html>
